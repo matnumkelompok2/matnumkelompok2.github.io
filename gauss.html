@@ -1,0 +1,156 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <h3>Eliminasi Gauss Jordan Pivot</h3>
+    <table class="table table-bordered table-sm">
+        <tr>
+            <th>x1</th>
+            <th>x2</th>
+            <th>x3</th>
+            <th>b</th>
+        </tr>
+        <tr>
+            <td><input type="text"  class="form-controll a11"></td>
+            <td><input type="text"  class="form-controll a12"></td>
+            <td><input type="text"  class="form-controll a13"></td>
+            <td><input type="text"  class="form-controll b1"></td>
+        </tr>
+        <tr>
+            <td><input type="text" class="form-controll a21"></td>
+            <td><input type="text" class="form-controll a22"></td>
+            <td><input type="text" class="form-controll a23"></td>
+            <td><input type="text" class="form-controll b2"></td>
+        </tr>
+        <tr>
+            <td><input type="text" class="form-controll a31"></td>
+            <td><input type="text" class="form-controll a32"></td>
+            <td><input type="text" class="form-controll a33"></td>
+            <td><input type="text" class="form-controll b3"></td>
+        </tr>
+    </table>
+    <button type="button" onclick="myFunction()" class="btn btn-primary">Hasil</button>
+    <hr>
+    <div class="card">
+        <div class="card-body">
+            <div class="hasil2">
+                <h3>Hasil :</h3>
+            </div>
+        </div>
+    </div>
+</div>   
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+<script>
+        function diagonalize(M) {
+            var m = M.length;
+            var n = M[0].length;
+            for (var k = 0; k < Math.min(m, n); ++k) {
+                // Find the k-th pivot
+                i_max = findPivot(M, k);
+                if (A[i_max, k] == 0)
+                    throw "matrix is singular";
+                swap_rows(M, k, i_max);
+                // Do for all rows below pivot
+                for (var i = k + 1; i < m; ++i) {
+                    // Do for all remaining elements in current row:
+                    var c = A[i][k] / A[k][k];
+                    for (var j = k + 1; j < n; ++j) {
+                        A[i][j] = A[i][j] - A[k][j] * c;
+                    }
+                    // Fill lower triangular matrix with zeros
+                    A[i][k] = 0;
+                }
+            }
+        }
+
+        function findPivot(M, k) {
+            var i_max = k;
+            for (var i = k + 1; i < M.length; ++i) {
+                if (Math.abs(M[i][k]) > Math.abs(M[i_max][k])) {
+                    i_max = i;
+                }
+            }
+            return i_max;
+        }
+
+        function swap_rows(M, i_max, k) {
+            if (i_max != k) {
+                var temp = A[i_max];
+                A[i_max] = A[k];
+                A[k] = temp;
+            }
+        }
+
+        function makeM(A, b) {
+            for (var i = 0; i < A.length; ++i) {
+                A[i].push(b[i]);
+            }
+        }
+
+        function substitute(M) {
+            var m = M.length;
+            for (var i = m - 1; i >= 0; --i) {
+                var x = M[i][m] / M[i][i];
+                for (var j = i - 1; j >= 0; --j) {
+                    M[j][m] -= x * M[j][i];
+                    M[j][i] = 0;
+                }
+                M[i][m] = x;
+                M[i][i] = 1;
+            }
+        }
+
+        function extractX(M) {
+            var x = [];
+            var m = A.length;
+            var n = A[0].length;
+            for (var i = 0; i < m; ++i) {
+                $('.hasil2').append("<p> " + "x" + (i + 1) + " : " + A[i][n - 1]  + "</p>");
+            }
+        }
+
+        function solve(A, b) {
+            makeM(A, b);
+            diagonalize(A);
+            substitute(A);
+            extractX(A);
+        }
+        function myFunction() {
+            var a11 = $('.a11').val();
+            var a12 = $('.a12').val();
+            var a13 = $('.a13').val();
+            var b1 = $('.b1').val();
+
+            var a21 = $('.a21').val();
+            var a22 = $('.a22').val();
+            var a23 = $('.a23').val();
+            var b2 = $('.b2').val();
+            
+            var a31 = $('.a31').val();
+            var a32 = $('.a32').val();
+            var a33 = $('.a33').val();
+            var b3 = $('.b3').val();
+
+            A = [
+                [a11, a12, a13],
+                [a21, a22, a23],
+                [a31, a32, a33]
+            ];
+
+            b = [b1,b2,b3];
+
+            var x = solve(A, b);            
+        }
+</script>
+</html>

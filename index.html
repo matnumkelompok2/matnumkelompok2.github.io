@@ -1,0 +1,237 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matematika Numerik</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+                role="tab" aria-controls="home" aria-selected="true">Deret Taylor Sin(x)</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
+                role="tab" aria-controls="profile" aria-selected="false">Gauss</button>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <form>
+                <div class="mb-3">
+                    <label for="orde" class="form-label">Orde :</label>
+                    <input type="text" class="form-control" id="orde">
+                </div>
+                <div class="mb-3">
+                    <label for="x" class="form-label">sin(x) :</label>
+                    <input type="text" class="form-control" id="x">
+                </div>
+                <button type="button" class="btn btn-primary" onclick="DeretTaylor()">Hitung</button>
+            </form>
+            <table class="table table-bordered table-sin">
+                <thead>
+                    <tr class="table-dark">
+                        <th>Orde</th>
+                        <th>Deret</th>
+                        <th>+ atau -</th>
+                        <th>Hampiran</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div class="hasil">
+            </div>
+        </div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <h4>Eliminasi Gauss Jordan Pivot</h4>
+            <table class="table table-bordered table-sm">
+                <tr>
+                    <th>x1</th>
+                    <th>x2</th>
+                    <th>x3</th>
+                    <th>b</th>
+                </tr>
+                <tr>
+                    <td><input type="text" class="form-control a11"></td>
+                    <td><input type="text" class="form-control a12"></td>
+                    <td><input type="text" class="form-control a13"></td>
+                    <td><input type="text" class="form-control b1"></td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="form-control a21"></td>
+                    <td><input type="text" class="form-control a22"></td>
+                    <td><input type="text" class="form-control a23"></td>
+                    <td><input type="text" class="form-control b2"></td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="form-control a31"></td>
+                    <td><input type="text" class="form-control a32"></td>
+                    <td><input type="text" class="form-control a33"></td>
+                    <td><input type="text" class="form-control b3"></td>
+                </tr>
+            </table>
+            <button type="button" onclick="gausspivot()" class="btn btn-primary">Hasil</button>
+            <hr>
+            <div class="card">
+                <div class="card-body">
+                    <div class="hasil2">
+                        <h4>Hasil :</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+<script>
+    function  DeretTaylor() {
+        let orde = document.getElementById('orde').value;
+        let x = document.getElementById('x').value;
+        let result = 0;
+        let index = 0;
+
+        for (let curTerm = 1; curTerm <= orde; curTerm++) {
+            if(curTerm%2 == 1){
+                index += 1;
+                var curTermValue = Math.pow(parseFloat(x), (curTerm)) / faktorial(curTerm);
+                if(index== 1){
+                    result = curTermValue;
+                    $('.table-sin tbody').append("<tr><td>" + curTerm + "</td><td>" + curTermValue + "</td><td>" + curTermValue + "</td><td></td></tr>");
+                }else if(index%2 == 0){
+                    result -= curTermValue;
+                    if (curTerm == orde) {
+                        $('.table-sin tbody').append("<tr><td>" + curTerm + "</td><td>" + curTermValue + "</td><td>-" + curTermValue + "</td><td class='table-warning'>" + result + "</td></tr>");
+                    } else {
+                        $('.table-sin tbody').append("<tr><td>" + curTerm + "</td><td>" + curTermValue + "</td><td>-" + curTermValue + "</td><td>" + result + "</td></tr>");
+                    }
+                }else{
+                    result += curTermValue;
+                    if(curTerm == orde){
+                        $('.table-sin tbody').append("<tr><td>" + curTerm + "</td><td>" + curTermValue + "</td><td>" + curTermValue + "</td><td class='table-warning'>" + result + "</td></tr>");
+                    }else{
+                        $('.table-sin tbody').append("<tr><td>" + curTerm + "</td><td>" + curTermValue + "</td><td>" + curTermValue + "</td><td>" + result + "</td></tr>");
+                    }
+                }
+            }
+        }
+        $('.hasil').append("Maka Hasilnya : " + result);  
+    }
+
+    function faktorial(num) {
+        if(num == 0){
+            return 1;
+        }
+        return num * faktorial(num-1);
+    }
+
+    function diagonalize(M) {
+            var m = M.length;
+            var n = M[0].length;
+            for (var k = 0; k < Math.min(m, n); ++k) {
+                // Find the k-th pivot
+                i_max = findPivot(M, k);
+                if (A[i_max, k] == 0)
+                    throw "matrix is singular";
+                swap_rows(M, k, i_max);
+                // Do for all rows below pivot
+                for (var i = k + 1; i < m; ++i) {
+                    // Do for all remaining elements in current row:
+                    var c = A[i][k] / A[k][k];
+                    for (var j = k + 1; j < n; ++j) {
+                        A[i][j] = A[i][j] - A[k][j] * c;
+                    }
+                    // Fill lower triangular matrix with zeros
+                    A[i][k] = 0;
+                }
+            }
+        }
+
+        function findPivot(M, k) {
+            var i_max = k;
+            for (var i = k + 1; i < M.length; ++i) {
+                if (Math.abs(M[i][k]) > Math.abs(M[i_max][k])) {
+                    i_max = i;
+                }
+            }
+            return i_max;
+        }
+
+        function swap_rows(M, i_max, k) {
+            if (i_max != k) {
+                var temp = A[i_max];
+                A[i_max] = A[k];
+                A[k] = temp;
+            }
+        }
+
+        function makeM(A, b) {
+            for (var i = 0; i < A.length; ++i) {
+                A[i].push(b[i]);
+            }
+        }
+
+        function substitute(M) {
+            var m = M.length;
+            for (var i = m - 1; i >= 0; --i) {
+                var x = M[i][m] / M[i][i];
+                for (var j = i - 1; j >= 0; --j) {
+                    M[j][m] -= x * M[j][i];
+                    M[j][i] = 0;
+                }
+                M[i][m] = x;
+                M[i][i] = 1;
+            }
+        }
+
+        function extractX(M) {
+            var x = [];
+            var m = A.length;
+            var n = A[0].length;
+            for (var i = 0; i < m; ++i) {
+                $('.hasil2').append("<p> " + "x" + (i + 1) + " : " + A[i][n - 1] + "</p>");
+            }
+        }
+
+        function solve(A, b) {
+            makeM(A, b);
+            diagonalize(A);
+            substitute(A);
+            extractX(A);
+        }
+        function gausspivot() {
+            var a11 = $('.a11').val();
+            var a12 = $('.a12').val();
+            var a13 = $('.a13').val();
+            var b1 = $('.b1').val();
+
+            var a21 = $('.a21').val();
+            var a22 = $('.a22').val();
+            var a23 = $('.a23').val();
+            var b2 = $('.b2').val();
+
+            var a31 = $('.a31').val();
+            var a32 = $('.a32').val();
+            var a33 = $('.a33').val();
+            var b3 = $('.b3').val();
+
+            A = [
+                [a11, a12, a13],
+                [a21, a22, a23],
+                [a31, a32, a33]
+            ];
+
+            b = [b1, b2, b3];
+
+            var x = solve(A, b);
+        }
+</script>
+</html>
